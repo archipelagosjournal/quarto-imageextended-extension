@@ -1,0 +1,43 @@
+---
+title: "Image-ext Example"
+format: 
+  html: 
+    anchor-sections: true
+  pdf: 
+    pdf-engine: lualatex
+    keep-tex: true
+    documentclass: scrartcl    
+    latex-output-dir: _latex
+    latex-clean: false
+---
+
+## Image extended example
+
+
+{{< image-ext img="issue03/johnson-a.png"
+    caption="Suomi satellite images of Puerto Rico on 24 July 2017 and 24 September 2017. Image credit: NOAA National Environmental Satellite, Data, and Information Service (NESDIS)."1
+    print_caption="Suomi Puerto Rico 24 September 2017"
+    url="https://twitter.com/NOAASatellitePA/status/912368981784309760" >}}
+
+
+```
+include image.html
+img="issue03/johnson-a.png"
+title="Suomi Puerto Rico 24 September 2017"
+caption="Suomi satellite images of Puerto Rico on 24 July 2017 and
+24 September 2017. Image credit\: NOAA National Environmental
+Satellite, Data, and Information Service (NESDIS)."
+url="https://twitter.com/NOAASatellitePA/status/912368981784309760" 
+```
+
+
+{{< image-ext img="issue03/johnson-d.jpeg"
+              caption="Roberts's graphic notation for Coin Coin." >}}
+
+```
+{% include image.html
+    img="issue03/johnson-d.jpeg"
+    caption="Roberts's graphic notation for Coin Coin." 
+%}
+```
+

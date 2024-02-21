@@ -1,0 +1,8 @@
+title: Image-ext
+author: First Last
+version: 1.0.0
+quarto-required: ">=1.4.0"
+contributes:
+  shortcodes:
+    - image-ext.lua
+
