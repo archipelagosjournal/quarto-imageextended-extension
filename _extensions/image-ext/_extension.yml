@@ -1,5 +1,5 @@
-title: Image-ext
-author: First Last
+title: Clickable image figures in LaTeX
+author: Brian Ballsun-Stanton
 version: 1.0.0
 quarto-required: ">=1.4.0"
 contributes:

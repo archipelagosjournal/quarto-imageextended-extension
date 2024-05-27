@@ -1,8 +1,7 @@
 
 return {
   ['image-ext'] = function(args, kwargs, meta) 
-    quarto.log.output("Loading image-ext extension", "args", args, "kwargs", kwargs)
-    -- return pandoc.Str("Hello from Image-ext!")
+    quarto.log.output("Loading image-ext extension", "args", args, "kwargs", kwargs)    
     
     local img = pandoc.utils.stringify(kwargs["img"])
     if img == '' then
@@ -19,7 +18,12 @@ return {
       print_caption = caption
     end
     local url = pandoc.utils.stringify(kwargs["url"])
-    
+    local captiontype = pandoc.utils.stringify(kwargs["captiontype"])
+    if captiontype == '' then
+      captiontype = nil
+    end
+
+
     if url == '' then
       url = nil
       quarto.log.output("img = '" .. img .. "'", "caption = '" .. caption .. "'", "print_caption = '" .. print_caption .. "'")
@@ -54,21 +58,29 @@ return {
     elseif quarto.doc.is_format("latex") then
       -- if there's a url, we need to append it to the print caption for those who are working on a printed out version of the pdf. We also need to make the image clickable.
       
-      if url then
-        print_caption = print_caption .. " \\href{" .. url .. "}{(" .. url .. ")}"
-      end
+      
 
       local latex = {
         pandoc.RawInline('latex', '\\begin{figure}[H]\n\\centering\n')
       }
       if url then
-        table.insert(latex,pandoc.RawInline('latex','\\href{'..url..'}{'))
+        table.insert(latex,pandoc.RawInline('latex','\\href{'))
+        table.insert(latex,pandoc.Str(url))
+        table.insert(latex,pandoc.RawInline('latex','}{'))
       end
       table.insert(latex,pandoc.RawInline('latex','\\includegraphics[width=\\textwidth]{' .. img .. '}\n'))
       if url then
         table.insert(latex,pandoc.RawInline('latex','}'))
       end
-      table.insert(latex,pandoc.RawInline('latex','\n\\caption{' .. print_caption .. '}\n\\end{figure}'))
+      if captiontype then
+        table.insert(latex,pandoc.RawInline('latex','\n\\captionsetup{type='.. captiontype ..'}'))      
+      end
+      table.insert(latex,pandoc.RawInline('latex','\n\\caption{'))
+      table.insert(latex, pandoc.Str(print_caption))
+      if url then
+        table.insert(latex, pandoc.RawInline('latex', " \\href{" .. url .. "}{(" .. url .. ")}"))
+      end
+      table.insert(latex, pandoc.RawInline('latex','}\n\\end{figure}'))
       
       -- else
       --   latex = '\\begin{figure}[H]\n\\centering\n\\includegraphics[width=\\textwidth]{' .. img .. '}\n\\caption{' .. print_caption .. '}\n\\end{figure}'
