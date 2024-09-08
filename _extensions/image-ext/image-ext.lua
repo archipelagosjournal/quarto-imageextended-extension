@@ -1,7 +1,12 @@
+if not GLOBAL_COUNTER then
+  GLOBAL_COUNTER = { figure = 0 }
+end
 
 return {
   ['image-ext'] = function(args, kwargs, meta) 
     quarto.log.output("Loading image-ext extension", "args", args, "kwargs", kwargs)    
+
+
     
     local img = pandoc.utils.stringify(kwargs["img"])
     if img == '' then
@@ -21,6 +26,19 @@ return {
     local captiontype = pandoc.utils.stringify(kwargs["captiontype"])
     if captiontype == '' then
       captiontype = nil
+    end
+
+    if not captiontype or captiontype == 'figure' then
+      GLOBAL_COUNTER.figure = GLOBAL_COUNTER.figure + 1
+      quarto.log.output("GLOBAL_COUNTER.figure = " .. GLOBAL_COUNTER.figure)
+    end
+
+    local figureoverride = pandoc.utils.stringify(kwargs["figureoverride"])
+    if figureoverride == '' then
+      figureoverride = nil
+    end
+    if figureoverride then
+      GLOBAL_COUNTER.figure = figureoverride
     end
 
 
@@ -45,8 +63,12 @@ return {
           table.insert(elements, pandoc.RawInline('html', '<a href="' .. url .. '">'))
         end
         table.insert(elements, pandoc.RawInline('html', '<img src="' .. img .. '" class="img-fluid figure-img" alt="'))
+        
         table.insert(elements, pandoc.Str(caption))
-        table.insert(elements, pandoc.RawInline('html', '"></p>\n<figcaption>'))
+        table.insert(elements, pandoc.RawInline('html', '"></p>\n<figcaption class="caption">'))
+        if not captiontype or captiontype == 'figure' then
+          table.insert(elements, pandoc.Str("Figure " .. GLOBAL_COUNTER.figure .. ". "))
+        end
         table.insert(elements, pandoc.Str(caption))
         table.insert(elements, pandoc.RawInline('html', '</figcaption>'))
         if url then
